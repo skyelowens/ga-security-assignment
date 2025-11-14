@@ -1,11 +1,3 @@
-name: CI with Security Checks
-
-on: [push, pull_request]
-
-jobs:
-  test-and-scan:
-    runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
 
@@ -20,7 +12,9 @@ jobs:
           pip install safety bandit
 
       - name: Run Tests
-        run: pytest tests/
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: pytest -q tests/
 
       - name: Security Check 1 - Dependency Scan
         run: |
@@ -33,3 +27,4 @@ jobs:
           echo "Scanning code for security issues..."
           bandit -r src/ -ll
         continue-on-error: true
+
